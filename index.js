@@ -1,18 +1,18 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const env = require('dotenv');
+const express = require("express");
+const mongoose = require("mongoose");
+const env = require("dotenv");
 const app = express();
-const path = require('path');
-const cors = require('cors');
-let bodyParser = require('body-parser');
+const path = require("path");
+const cors = require("cors");
+let bodyParser = require("body-parser");
 
 // routes
-const authRoutes = require('./routes/auth');
-const imageRoute = require('./routes/image');
-const blogRoute = require('./routes/blog');
-const cowNewRoute = require('./routes/cowNew');
-const signupFormRoute = require('./routes/signupForm');
-const investFormRoute = require('./routes/investForm');
+const authRoutes = require("././src/routes/auth");
+const imageRoute = require("././src/routes/image");
+const blogRoute = require("././src/routes/blog");
+const cowNewRoute = require("././src/routes/cowNew");
+const signupFormRoute = require("././src/routes/signupForm");
+const investFormRoute = require("././src/routes/investForm");
 
 // environment variables
 env.config();
@@ -28,14 +28,14 @@ mongoose.connect(
   },
   (err) => {
     if (err) throw err;
-    console.log('MongoDB connection is established');
+    console.log("MongoDB connection is established");
   }
 );
 
 // code for socket start
-const io = require('socket.io')(8900, {
+const io = require("socket.io")(8900, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: "http://localhost:3000",
   },
 });
 
@@ -54,53 +54,53 @@ const getUser = (userId) => {
   return users.find((user) => user.userId === userId);
 };
 
-io.on('connection', (socket) => {
+io.on("connection", (socket) => {
   //when ceonnect
-  console.log('a user connected.');
+  console.log("a user connected.");
 
   //take userId and socketId from user
-  socket.on('addUser', (userId) => {
+  socket.on("addUser", (userId) => {
     addUser(userId, socket.id);
-    io.emit('getUsers', users);
+    io.emit("getUsers", users);
   });
 
   //send and get message
-  socket.on('sendMessage', ({ senderId, receiverId, text }) => {
+  socket.on("sendMessage", ({ senderId, receiverId, text }) => {
     const user = getUser(receiverId);
-    io.to(user?.socketId).emit('getMessage', {
+    io.to(user?.socketId).emit("getMessage", {
       senderId,
       text,
     });
   });
 
   //when disconnect
-  socket.on('disconnect', () => {
-    console.log('a user disconnected!');
+  socket.on("disconnect", () => {
+    console.log("a user disconnected!");
     removeUser(socket.id);
-    io.emit('getUsers', users);
+    io.emit("getUsers", users);
   });
 });
 
 // code for socket end
 
 // greeting route
-app.get('/', (req, res) => {
-  res.send('Backend is Running...');
+app.get("/", (req, res) => {
+  res.send("Backend is Running...");
 });
 
 // middleware
 app.use(cors());
 app.use(express.json());
-app.use(bodyParser.json({ limit: '100mb' }));
+app.use(bodyParser.json({ limit: "100mb" }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.urlencoded({ extended: true }));
-app.use('/public', express.static(path.join(__dirname, 'uploads')));
-app.use('/api/account', authRoutes);
-app.use('/api/image', imageRoute);
-app.use('/api/blog', blogRoute);
-app.use('/api/cowNew', cowNewRoute);
-app.use('/api/signupForm', signupFormRoute);
-app.use('/api/investForm', investFormRoute);
+app.use("/public", express.static(path.join(__dirname, "uploads")));
+app.use("/api/account", authRoutes);
+app.use("/api/image", imageRoute);
+app.use("/api/blog", blogRoute);
+app.use("/api/cowNew", cowNewRoute);
+app.use("/api/signupForm", signupFormRoute);
+app.use("/api/investForm", investFormRoute);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
