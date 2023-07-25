@@ -7,12 +7,12 @@ const cors = require("cors");
 let bodyParser = require("body-parser");
 
 // routes
-const authRoutes = require("././src/routes/auth");
-const imageRoute = require("././src/routes/image");
-const blogRoute = require("././src/routes/blog");
-const cowNewRoute = require("././src/routes/cowNew");
-const signupFormRoute = require("././src/routes/signupForm");
-const investFormRoute = require("././src/routes/investForm");
+const authRoutes = require("./routes/auth");
+const imageRoute = require("./routes/image");
+const blogRoute = require("./routes/blog");
+const cowNewRoute = require("./routes/cowNew");
+const signupFormRoute = require("./routes/signupForm");
+const investFormRoute = require("./routes/investForm");
 
 // environment variables
 env.config();
